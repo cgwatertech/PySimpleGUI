@@ -1,6 +1,6 @@
+import matplotlib.pyplot as plt  # 추가된 라이브러리
 import pandas as pd
 import numpy as np
-import plotly.express as px
 import streamlit as st
 from PIL import Image
 import datetime
@@ -28,11 +28,11 @@ job_filter = st.selectbox("관측공의 위치 선택", pd.unique(df.columns), i
 
 st.markdown("### 지하수위 그래프")
 df["Time"] = pd.to_datetime(df["Time"])
-fig1 = px.line(
-    x=df["Time"], y=df[job_filter], data_frame=df)
-fig1.update_xaxes(title_text="X 축 (mmm dd)")
-fig1.update_yaxes(title_text="Y 축 (m)")
-st.write(fig1)
+plt.figure(figsize=(12, 6))
+plt.plot(df["Time"], df[job_filter])
+plt.xlabel("X 축 (mmm dd)")
+plt.ylabel("Y 축 (m)")
+st.pyplot(plt)  # Matplotlib 플롯을 표시
 
 # Date and time filtering
 start_date = st.date_input('Enter start date', value=datetime.datetime(2023, 9, 26))
@@ -58,15 +58,12 @@ custom_y_range = st.slider("Y-축 범위 조절 (cm)", min_value=-200, max_value
 scaled_y_range = (custom_y_range[0] / 10.0, custom_y_range[1] / 10.0)
 
 # fig2 - 특정 시간대의 지하수위 그래프
-fig2 = px.line(
-    x=filtered_df["Time"], y=filtered_df[job_filter])
-fig2.update_xaxes(title_text="X 축 (mmm dd)")
-fig2.update_yaxes(title_text="Y 축 (m)")
-fig2.update_yaxes(range=scaled_y_range)
-
-# Create a new window for fig2
-st.markdown("### 특정 시간대의 지하수위 그래프 (새 창)")
-st.plotly_chart(fig2)
+plt.figure(figsize=(12, 6))
+plt.plot(filtered_df["Time"], filtered_df[job_filter])
+plt.xlabel("X 축 (mmm dd)")
+plt.ylabel("Y 축 (m)")
+plt.ylim(scaled_y_range)
+st.pyplot(plt)
 
 # Image upload
 uploaded_file = st.file_uploader("업로드할 이미지를 선택하세요.", type=["png", "jpg", "jpeg"])
